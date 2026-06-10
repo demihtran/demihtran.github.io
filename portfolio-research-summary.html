@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tổng hợp định hướng Portfolio AI Engineer</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --card: #0f172a;
+      --card-2: #111827;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+      --secondary: #a78bfa;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #fb7185;
+      --border: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      line-height: 1.7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 32%),
+        radial-gradient(circle at top right, rgba(167, 139, 250, 0.18), transparent 32%),
+        var(--bg);
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
+      padding: 48px 0 72px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 56px 0 36px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 999px;
+      color: var(--primary);
+      background: rgba(56, 189, 248, 0.08);
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.25;
+      margin: 0 0 14px;
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 5vw, 4.2rem);
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      color: var(--primary);
+      margin-bottom: 18px;
+    }
+
+    h3 {
+      font-size: 1.22rem;
+      color: var(--secondary);
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    strong {
+      color: var(--text);
+    }
+
+    .hero p {
+      max-width: 840px;
+      margin: 0 auto 16px;
+      font-size: 1.1rem;
+    }
+
+    .section {
+      margin: 34px 0;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .mini-card {
+      background: rgba(17, 24, 39, 0.86);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    ul, ol {
+      margin: 10px 0 0;
+      padding-left: 22px;
+      color: var(--muted);
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    code, pre {
+      background: #020617;
+      border: 1px solid var(--border);
+      color: #bae6fd;
+      border-radius: 10px;
+    }
+
+    code {
+      padding: 2px 6px;
+    }
+
+    pre {
+      padding: 16px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .answer {
+      border-left: 5px solid var(--success);
+      background: rgba(52, 211, 153, 0.09);
+    }
+
+    .warning {
+      border-left: 5px solid var(--warning);
+      background: rgba(251, 191, 36, 0.09);
+    }
+
+    .danger {
+      border-left: 5px solid var(--danger);
+      background: rgba(251, 113, 133, 0.08);
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      color: #bae6fd;
+      font-size: 0.92rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      min-width: 760px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 13px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: rgba(56, 189, 248, 0.08);
+      color: var(--text);
+    }
+
+    td {
+      color: var(--muted);
+    }
+
+    .decision {
+      font-size: 1.08rem;
+      color: var(--text);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 42px;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <span class="badge">AI Engineer Portfolio Research</span>
+      <h1>Tổng hợp định hướng thiết kế Portfolio cá nhân bằng Next.js</h1>
+      <p>
+        Tài liệu này tổng hợp các hướng thiết kế, tech stack nên dùng, repo/UI nên tham khảo
+        và giải thích rõ việc portfolio có cần API endpoint tạo ảnh/video hay không.
+      </p>
+    </section>
+
+    <section class="section card answer">
+      <h2>Câu trả lời nhanh: Có cần API tạo ảnh/video không?</h2>
+      <p class="decision">
+        <strong>Không bắt buộc.</strong> Nếu mục tiêu của bạn là làm một portfolio cá nhân để xin việc AI Engineer,
+        bạn không cần phải cung cấp API endpoint tạo ảnh hoặc video ngay từ đầu.
+      </p>
+      <p>
+        Portfolio cơ bản chỉ cần là một website giới thiệu bản thân, kỹ năng, dự án, CV, GitHub, LinkedIn
+        và các case study kỹ thuật. API tạo ảnh/video chỉ cần nếu bạn muốn portfolio có tính năng AI tương tác,
+        ví dụ người xem nhập prompt rồi website tạo ảnh hoặc video trực tiếp.
+      </p>
+    </section>
+
+    <section class="section card">
+      <h2>Khi nào cần API endpoint tạo ảnh/video?</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Trường hợp</th>
+              <th>Có cần API không?</th>
+              <th>Giải thích</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Portfolio tĩnh để giới thiệu bản thân</td>
+              <td>Không cần</td>
+              <td>Chỉ cần Next.js render nội dung, project cards, CV, contact links.</td>
+            </tr>
+            <tr>
+              <td>Show ảnh/video demo đã tạo sẵn</td>
+              <td>Không cần</td>
+              <td>Bạn có thể lưu ảnh/video trong thư mục assets hoặc dùng link demo có sẵn.</td>
+            </tr>
+            <tr>
+              <td>Người xem nhập prompt để tạo ảnh AI</td>
+              <td>Cần</td>
+              <td>Cần gọi model/API như image generation API, Stable Diffusion server hoặc service bên thứ ba.</td>
+            </tr>
+            <tr>
+              <td>Người xem tạo video AI trực tiếp trên website</td>
+              <td>Cần</td>
+              <td>Cần backend/API vì tạo video thường nặng, mất thời gian và cần bảo vệ API key.</td>
+            </tr>
+            <tr>
+              <td>Chatbot hỏi đáp CV/project của bạn</td>
+              <td>Có thể cần</td>
+              <td>Nếu chatbot dùng LLM/RAG thật, nên có API route hoặc backend riêng.</td>
+            </tr>
+            <tr>
+              <td>Demo model ML qua form input</td>
+              <td>Cần nếu inference chạy realtime</td>
+              <td>Có thể dùng Next.js API Route, FastAPI backend hoặc serverless function.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section card warning">
+      <h2>Khuyến nghị cho giai đoạn hiện tại</h2>
+      <p>
+        Vì bạn đang ở <strong>Ngày 1</strong> và đã chuẩn bị xong CV nhưng chưa chọn phong cách thiết kế,
+        bạn nên ưu tiên làm portfolio đẹp, rõ ràng, deploy được trước. Không nên bắt đầu bằng tính năng tạo ảnh/video
+        vì dễ làm dự án bị phức tạp, tốn API cost và chậm hoàn thiện.
+      </p>
+      <ol>
+        <li>Làm portfolio Next.js hoàn chỉnh trước.</li>
+        <li>Thêm 3–5 project AI chất lượng.</li>
+        <li>Deploy lên Vercel hoặc GitHub Pages.</li>
+        <li>Sau đó mới thêm demo AI tương tác nếu cần.</li>
+      </ol>
+    </section>
+
+    <section class="section card">
+      <h2>Phong cách thiết kế nên tham khảo</h2>
+      <div class="grid">
+        <div class="mini-card">
+          <h3>1. AI Lab / Research Portfolio</h3>
+          <p>
+            Phong cách giống trang cá nhân của researcher hoặc AI lab. Tập trung vào project,
+            experiment, model, benchmark, paper, technical writing.
+          </p>
+          <ul>
+            <li>Giao diện sạch, ít màu.</li>
+            <li>Typography rõ ràng.</li>
+            <li>Rất hợp nếu bạn muốn thể hiện chiều sâu kỹ thuật.</li>
+          </ul>
+        </div>
+
+        <div class="mini-card">
+          <h3>2. Modern Developer Portfolio</h3>
+          <p>
+            Phong cách developer hiện đại với dark mode, card layout, animation nhẹ,
+            skill badges và project cards đẹp.
+          </p>
+          <ul>
+            <li>Dễ gây ấn tượng với recruiter.</li>
+            <li>Dễ đọc, dễ maintain.</li>
+            <li>Phù hợp nhất nếu mục tiêu là xin việc nhanh.</li>
+          </ul>
+        </div>
+
+        <div class="mini-card">
+          <h3>3. AI Product Builder Portfolio</h3>
+          <p>
+            Phong cách giống landing page của sản phẩm AI. Tập trung vào demo,
+            screenshot, workflow, API, dashboard và sản phẩm chạy được.
+          </p>
+          <ul>
+            <li>Rất nổi bật nếu bạn có project deploy thật.</li>
+            <li>Cho thấy bạn biến AI thành sản phẩm thực tế.</li>
+            <li>Có thể thêm chatbot hoặc demo AI sau.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section card answer">
+      <h2>Phong cách nên chọn cho bạn</h2>
+      <p class="decision">
+        Mình khuyên bạn chọn hướng: <strong>Modern AI Engineer Portfolio</strong>.
+      </p>
+      <p>
+        Đây là sự kết hợp giữa portfolio developer hiện đại, AI lab/research profile và product demo.
+        Hướng này vừa đẹp, vừa chuyên nghiệp, vừa đúng với hình ảnh AI Engineer đi xin việc.
+      </p>
+      <ul>
+        <li>Giao diện dark mode hiện đại.</li>
+        <li>Project cards rõ ràng.</li>
+        <li>Case study kỹ thuật cho từng dự án AI.</li>
+        <li>Có section CV, GitHub, LinkedIn.</li>
+        <li>Có thể mở rộng thêm blog hoặc demo AI tương tác.</li>
+      </ul>
+    </section>
+
+    <section class="section card">
+      <h2>Tech stack đề xuất</h2>
+      <p>Vì bạn muốn dùng Next.js và công nghệ mới, stack nên dùng là:</p>
+      <pre><code>Next.js 15+
+React 19+
+TypeScript
+Tailwind CSS
+shadcn/ui
+Motion
+Lucide React
+MDX hoặc Markdown
+Vercel hoặc GitHub Pages</code></pre>
+
+      <div class="grid">
+        <div class="mini-card">
+          <h3>Next.js</h3>
+          <p>Framework chính để xây portfolio hiện đại, SEO tốt, dễ deploy và phù hợp với React ecosystem.</p>
+        </div>
+        <div class="mini-card">
+          <h3>TypeScript</h3>
+          <p>Giúp code rõ ràng, chuyên nghiệp hơn và thể hiện tư duy software engineering tốt.</p>
+        </div>
+        <div class="mini-card">
+          <h3>Tailwind CSS</h3>
+          <p>Giúp làm giao diện nhanh, responsive tốt, dark mode dễ và giữ style nhất quán.</p>
+        </div>
+        <div class="mini-card">
+          <h3>shadcn/ui</h3>
+          <p>Cung cấp component đẹp, hiện đại, dễ chỉnh sửa như Button, Card, Badge, Tabs, Dialog.</p>
+        </div>
+        <div class="mini-card">
+          <h3>Motion</h3>
+          <p>Dùng cho animation nhẹ: card hover, scroll reveal, page transition, hero animation.</p>
+        </div>
+        <div class="mini-card">
+          <h3>MDX / Markdown</h3>
+          <p>Phù hợp để viết case study, blog kỹ thuật và ghi chú về các project AI.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section card">
+      <h2>Layout portfolio đề xuất</h2>
+      <pre><code>Home
+├── Hero
+│   ├── Tên của bạn
+│   ├── AI Engineer tagline
+│   ├── Short intro
+│   ├── Buttons: View Projects / Download CV / Contact
+│
+├── About
+│   ├── Bạn là ai
+│   ├── Định hướng AI Engineer
+│   ├── Mảng quan tâm: LLM, RAG, CV, MLOps
+│
+├── Featured Projects
+│   ├── RAG Chatbot
+│   ├── Computer Vision App
+│   ├── ML Prediction API
+│   ├── AI Agent / LLM Tool
+│
+├── Project Case Studies
+│   ├── Problem
+│   ├── Dataset
+│   ├── Model / Architecture
+│   ├── Evaluation
+│   ├── Deployment
+│   ├── Demo / GitHub
+│
+├── Skills
+│   ├── AI/ML
+│   ├── Backend
+│   ├── MLOps
+│   ├── Cloud
+│
+├── Experience / Education
+├── Blog / Technical Notes
+└── Contact</code></pre>
+    </section>
+
+    <section class="section card">
+      <h2>Style cụ thể nên dùng</h2>
+      <h3>Màu sắc</h3>
+      <pre><code>Background: #020617 hoặc #0f172a
+Primary: cyan / sky blue
+Secondary: violet
+Text: white / slate
+Accent: emerald</code></pre>
+
+      <h3>Font</h3>
+      <ul>
+        <li><strong>Geist Sans</strong> hoặc <strong>Inter</strong> cho nội dung chính.</li>
+        <li><strong>JetBrains Mono</strong> cho code snippet hoặc technical badges.</li>
+      </ul>
+
+      <h3>Animation</h3>
+      <ul>
+        <li>Card hover nhẹ.</li>
+        <li>Scroll reveal cho từng section.</li>
+        <li>Gradient background.</li>
+        <li>Animated grid background nhẹ.</li>
+        <li>Không nên dùng quá nhiều hiệu ứng 3D.</li>
+      </ul>
+    </section>
+
+    <section class="section card">
+      <h2>Repo/UI nên tham khảo</h2>
+      <div class="grid">
+        <div class="mini-card">
+          <h3>Vercel Templates</h3>
+          <p>
+            Nơi tham khảo template Next.js chính thống, gồm portfolio, blog, starter kit,
+            personal website và CMS template.
+          </p>
+          <p><strong>Gợi ý:</strong> dùng để xem cấu trúc project Next.js chuẩn.</p>
+        </div>
+
+        <div class="mini-card">
+          <h3>shadcn/ui</h3>
+          <p>
+            Thư viện component hiện đại, open-source, phù hợp để xây portfolio đẹp mà vẫn kiểm soát được code.
+          </p>
+          <p><strong>Gợi ý:</strong> dùng Card, Button, Badge, Tabs, Navigation, Dialog.</p>
+        </div>
+
+        <div class="mini-card">
+          <h3>Tailwind CSS</h3>
+          <p>
+            Framework CSS utility-first giúp build responsive layout nhanh và hỗ trợ dark mode rất tốt.
+          </p>
+          <p><strong>Gợi ý:</strong> dùng cho toàn bộ layout và design system.</p>
+        </div>
+
+        <div class="mini-card">
+          <h3>Motion</h3>
+          <p>
+            Thư viện animation cho React/JavaScript, phù hợp để tạo portfolio mượt và chuyên nghiệp.
+          </p>
+          <p><strong>Gợi ý:</strong> dùng ít nhưng tinh tế, tránh làm rối giao diện.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section card">
+      <h2>Các project nên đưa vào portfolio AI Engineer</h2>
+      <div class="grid">
+        <div class="mini-card">
+          <h3>RAG Chatbot</h3>
+          <p>Chatbot hỏi đáp tài liệu cá nhân hoặc tài liệu công ty.</p>
+          <div class="tag-list">
+            <span class="tag">LLM</span>
+            <span class="tag">RAG</span>
+            <span class="tag">Vector DB</span>
+            <span class="tag">FastAPI</span>
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <h3>Computer Vision App</h3>
+          <p>Phân loại ảnh, object detection hoặc image search.</p>
+          <div class="tag-list">
+            <span class="tag">PyTorch</span>
+            <span class="tag">YOLO</span>
+            <span class="tag">OpenCV</span>
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <h3>ML Prediction API</h3>
+          <p>Dự báo dữ liệu tabular và triển khai thành API.</p>
+          <div class="tag-list">
+            <span class="tag">scikit-learn</span>
+            <span class="tag">XGBoost</span>
+            <span class="tag">Docker</span>
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <h3>AI Agent / Automation Tool</h3>
+          <p>Agent tự động xử lý task, gọi tool hoặc phân tích dữ liệu.</p>
+          <div class="tag-list">
+            <span class="tag">LangGraph</span>
+            <span class="tag">Tool Calling</span>
+            <span class="tag">LLM</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section card danger">
+      <h2>Lưu ý nếu thêm API tạo ảnh/video</h2>
+      <p>Nếu sau này bạn muốn portfolio có chức năng tạo ảnh hoặc video bằng AI, cần chú ý:</p>
+      <ul>
+        <li>Không để API key ở frontend.</li>
+        <li>Nên dùng Next.js API Route hoặc backend riêng như FastAPI.</li>
+        <li>Cần giới hạn số lần gọi API để tránh tốn tiền.</li>
+        <li>Cần loading state vì tạo ảnh/video có thể mất thời gian.</li>
+        <li>Cần xử lý lỗi khi API fail hoặc model quá tải.</li>
+        <li>Nên bắt đầu bằng demo ảnh trước, video để sau vì video nặng và phức tạp hơn.</li>
+      </ul>
+    </section>
+
+    <section class="section card answer">
+      <h2>Quyết định nên làm bây giờ</h2>
+      <ol>
+        <li>Chọn phong cách <strong>Modern Dark AI Engineer Portfolio</strong>.</li>
+        <li>Dùng stack <strong>Next.js + TypeScript + Tailwind CSS + shadcn/ui + Motion</strong>.</li>
+        <li>Chưa cần API tạo ảnh/video ở giai đoạn đầu.</li>
+        <li>Ưu tiên làm portfolio đẹp, deploy được, có CV và project rõ ràng.</li>
+        <li>Sau khi website ổn, có thể thêm demo AI tương tác như chatbot RAG hoặc image generation.</li>
+      </ol>
+    </section>
+
+    <footer class="footer">
+      <p>Nên hoàn thiện portfolio trước, rồi mới thêm tính năng AI tương tác để tránh dự án bị quá phức tạp ngay từ đầu.</p>
+    </footer>
+  </main>
+</body>
+</html>
