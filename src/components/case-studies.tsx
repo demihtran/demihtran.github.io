@@ -1,35 +1,36 @@
 import { caseStudies } from "@/data/projects";
 import { Card } from "@/components/ui/card";
 
+const labels = ["Problem", "Approach", "Outcome"] as const;
+
 export function CaseStudies() {
   return (
-    <section id="case-studies" className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-      <div className="mb-10 max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-200">Case Studies</p>
-        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          How I think about reliable agent systems.
+    <section id="case-studies" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+      <div className="mb-12 max-w-3xl">
+        <p className="text-sm font-medium uppercase tracking-[0.35em] text-white/40">Notes</p>
+        <h2 className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
+          How I design AI systems.
         </h2>
       </div>
       <div className="grid gap-5 lg:grid-cols-2">
-        {caseStudies.map((study) => (
-          <Card key={study.title}>
-            <h3 className="text-2xl font-semibold text-white">{study.title}</h3>
-            <div className="mt-6 space-y-5">
-              <div>
-                <p className="text-sm font-semibold text-cyan-100">Problem</p>
-                <p className="mt-2 text-sm leading-6 text-slate-400">{study.problem}</p>
+        {caseStudies.map((study, index) => {
+          const values = [study.problem, study.approach, study.outcome];
+
+          return (
+            <Card key={study.title} className="p-7 sm:p-8">
+              <p className="font-mono text-sm text-white/35">0{index + 1}</p>
+              <h3 className="mt-5 text-2xl font-medium tracking-[-0.02em] text-white">{study.title}</h3>
+              <div className="mt-8 divide-y divide-white/10 border-y border-white/10">
+                {labels.map((label, labelIndex) => (
+                  <div key={label} className="grid gap-3 py-5 sm:grid-cols-[8rem_1fr]">
+                    <p className="text-xs font-medium uppercase tracking-[0.25em] text-white/35">{label}</p>
+                    <p className="text-sm leading-6 text-white/55">{values[labelIndex]}</p>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="text-sm font-semibold text-violet-100">Approach</p>
-                <p className="mt-2 text-sm leading-6 text-slate-400">{study.approach}</p>
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-emerald-100">Outcome</p>
-                <p className="mt-2 text-sm leading-6 text-slate-400">{study.outcome}</p>
-              </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </div>
     </section>
   );

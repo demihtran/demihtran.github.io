@@ -1,22 +1,22 @@
 export const skillGroups = [
   {
-    title: "LLM Applications",
+    title: "LLM Systems",
     skills: ["Claude API", "OpenAI API", "Structured Outputs", "Streaming", "Prompt Caching", "Context Engineering"],
   },
   {
-    title: "Agent Harness",
+    title: "Agent Engineering",
     skills: ["Agent Loop", "Tool Calling", "Tool Registry", "Planner/Executor", "Memory", "Human-in-the-loop"],
   },
   {
-    title: "Frameworks",
-    skills: ["LangGraph", "LangChain", "LlamaIndex", "Vercel AI SDK", "Next.js", "FastAPI"],
+    title: "Evaluation & Reliability",
+    skills: ["Eval Sets", "Tracing", "Observability", "Guardrails", "Error Recovery", "Cost Tracking"],
   },
   {
-    title: "Reliability",
-    skills: ["Evaluation", "Tracing", "Observability", "Guardrails", "Error Recovery", "Cost Tracking"],
+    title: "Backend & Product",
+    skills: ["TypeScript", "Python", "Next.js", "FastAPI", "REST APIs", "PostgreSQL"],
   },
   {
-    title: "Engineering",
-    skills: ["TypeScript", "Python", "REST APIs", "PostgreSQL", "Docker", "GitHub Actions"],
+    title: "Data & Automation",
+    skills: ["RAG", "Vector Search", "Workflow Automation", "GitHub Actions", "Docker", "Analytics"],
   },
 ];

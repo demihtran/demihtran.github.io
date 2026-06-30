@@ -10,14 +10,14 @@ import { Skills } from "@/components/skills";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
+    <main className="min-h-screen bg-black text-white">
       <Navbar />
       <Hero />
-      <About />
       <AgentFocus />
       <Projects />
       <Skills />
       <CaseStudies />
+      <About />
       <Contact />
       <Footer />
     </main>

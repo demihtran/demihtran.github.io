@@ -1,20 +1,21 @@
 export const profile = {
   name: "Hong Diem",
-  role: "AI Agent Engineer",
-  headline: "Building reliable AI agents, agent harnesses and LLM-powered workflows.",
+  initials: "HD",
+  role: "AI Engineer",
+  headline: "I build reliable AI systems around LLMs.",
   summary:
-    "I focus on designing agentic AI systems that can reason, use tools, manage context and automate real-world workflows. My portfolio highlights AI agent harness design, tool calling, memory, evaluation and production-ready LLM applications.",
+    "I design agent workflows, tool-use systems, context pipelines and evaluation loops for practical AI products. This portfolio is a clean skeleton for future demos, case studies and production-ready AI engineering work.",
   location: "Vietnam",
-  email: "your.email@example.com",
-  github: "https://github.com/your-username",
-  linkedin: "https://linkedin.com/in/your-profile",
+  email: "hdiemtran741@gmail.com",
+  github: "https://demihtran.github.io",
+  linkedin: "https://linkedin.com/in/diem-tran-138ab9293",
   resume: "/resume.pdf",
 };
 
 export const navigation = [
   { label: "Focus", href: "#focus" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Case Studies", href: "#case-studies" },
+  { label: "Work", href: "#projects" },
+  { label: "Stack", href: "#skills" },
+  { label: "Notes", href: "#case-studies" },
   { label: "Contact", href: "#contact" },
 ];

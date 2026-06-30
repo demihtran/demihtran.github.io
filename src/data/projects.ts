@@ -1,39 +1,39 @@
 export const projects = [
   {
     title: "Portfolio Agent",
-    status: "Planned demo",
+    status: "Skeleton",
     description:
-      "An agent that answers recruiter questions about my CV, projects and skills using structured profile data and optional retrieval.",
+      "A recruiter-facing assistant that answers questions about my CV, projects and skills from structured portfolio data.",
     tools: ["Profile Reader", "Project Retriever", "JD Matcher", "Answer Composer"],
-    stack: ["Next.js", "Vercel AI SDK", "Claude API", "Structured Data"],
-    result: "Turns a static portfolio into an interactive recruiter assistant.",
+    stack: ["Next.js", "Claude API", "Structured Data", "Evaluation Set"],
+    result: "Turns a static portfolio into an interactive AI Engineer profile.",
   },
   {
     title: "Task Planning Agent",
-    status: "Concept project",
+    status: "Concept",
     description:
-      "A workflow agent that breaks complex user requests into executable steps, asks clarifying questions and tracks progress.",
+      "A workflow agent that breaks complex requests into steps, asks clarifying questions and tracks execution state.",
     tools: ["Planner", "Task Store", "Tool Registry", "Progress Tracker"],
-    stack: ["LangGraph", "TypeScript", "LLM Tool Use", "State Machine"],
-    result: "Demonstrates plan-act-observe loops and reliable multi-step execution.",
+    stack: ["LangGraph", "TypeScript", "Tool Calling", "State Machine"],
+    result: "Demonstrates controlled plan-act-observe execution instead of one-shot prompting.",
   },
   {
     title: "Research Assistant Agent",
     status: "Case study",
     description:
-      "An agent harness for reading sources, summarizing findings and producing structured research briefs with traceable context.",
+      "A research harness for reading sources, summarizing findings and producing traceable briefs with citations.",
     tools: ["Document Search", "Summarizer", "Citation Collector", "Report Writer"],
     stack: ["LlamaIndex", "Vector DB", "Claude API", "RAG"],
-    result: "Shows retrieval, context management and structured output design.",
+    result: "Shows retrieval design, context selection and structured output quality.",
   },
   {
     title: "Code Review Agent",
     status: "Future build",
     description:
-      "A developer-focused agent that explores repositories, reads relevant files and produces focused review notes.",
+      "A developer agent that explores repositories, reads diffs and produces focused review notes with evidence.",
     tools: ["File Search", "Code Reader", "Diff Analyzer", "Review Generator"],
-    stack: ["Claude API", "Tool Calling", "GitHub API", "Node.js"],
-    result: "Highlights practical coding-agent harness design and observability needs.",
+    stack: ["Claude API", "GitHub API", "Node.js", "Observability"],
+    result: "Highlights coding-agent harness design, review boundaries and debugging traces.",
   },
 ];
 
@@ -44,14 +44,14 @@ export const caseStudies = [
     approach:
       "Model the agent as a controlled loop: plan, choose a tool, execute, observe, update state and only then produce the final answer.",
     outcome:
-      "The portfolio will present agent projects as systems with explicit tools, state, evaluation and user control rather than simple prompts.",
+      "Future project pages will present agents as systems with explicit tools, state, evaluation and user control.",
   },
   {
-    title: "Making agent behavior observable",
-    problem: "When an agent fails, users need to know which tool call, context decision or output step caused the issue.",
+    title: "Making AI behavior observable",
+    problem: "When an AI workflow fails, users need to know which context decision, tool call or output step caused the issue.",
     approach:
-      "Expose execution traces, tool calls, latency, cost and final confidence signals in the project case studies and future demos.",
+      "Expose execution traces, tool calls, latency, cost, retries and confidence signals in each future demo or case study.",
     outcome:
-      "Recruiters can see that the focus is production-quality agent harnesses, not just API wrappers.",
+      "The portfolio communicates production-quality AI engineering rather than simple API wrappers.",
   },
 ];

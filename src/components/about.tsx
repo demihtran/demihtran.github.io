@@ -1,26 +1,33 @@
 import { Card } from "@/components/ui/card";
 
+const principles = [
+  ["Reliability over demos", "A good AI feature should be repeatable, observable and recoverable after the impressive first run."],
+  ["Tools before magic", "The harness defines what the model can do, what it can see and when it should stop."],
+  ["Evaluation as product work", "Shipping AI means designing test cases, review loops and quality signals alongside the interface."],
+];
+
 export function About() {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-      <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+    <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+      <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-200">About</p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            I build the harness around LLMs, not just prompts.
+          <p className="text-sm font-medium uppercase tracking-[0.35em] text-white/40">About</p>
+          <h2 className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
+            Operating principles for building with LLMs.
           </h2>
         </div>
-        <Card>
-          <p className="text-lg leading-8 text-slate-300">
-            My focus is AI Agent Harness engineering: designing the systems that help LLMs use tools,
-            manage context, follow workflows, recover from failures and produce reliable outputs. I am
-            interested in practical agentic applications where AI can support real workflows instead of
-            staying as a one-off demo.
+        <Card className="p-7 sm:p-8">
+          <p className="text-lg leading-8 text-white/60">
+            My work sits between product engineering and AI systems: turning model capability into workflows people can understand, trust and improve.
           </p>
-          <p className="mt-5 text-slate-400">
-            This portfolio is built to showcase agent projects, case studies and engineering decisions around
-            tool calling, memory, evaluation, tracing and user control.
-          </p>
+          <div className="mt-8 space-y-6 border-t border-white/10 pt-8">
+            {principles.map(([title, text]) => (
+              <div key={title}>
+                <h3 className="text-base font-medium text-white">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-white/50">{text}</p>
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
     </section>

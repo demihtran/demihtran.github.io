@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hong Diem – AI Agent Engineer Portfolio",
+  title: "Hong Diem — AI Engineer",
   description:
-    "AI Engineer portfolio focused on AI agents, LLM applications, tool calling, workflow automation and agent harness design.",
+    "AI Engineer portfolio focused on LLM systems, AI agents, tool use, evaluation, automation and production-ready AI workflows.",
 };
 
 export default function RootLayout({
