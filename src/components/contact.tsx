@@ -14,7 +14,7 @@ export function Contact() {
               Have an AI system to design, evaluate or ship?
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-7 text-black/60">
-              This portfolio is prepared for AI Engineer opportunities. Replace the placeholder email, GitHub, LinkedIn and CV with your real links before publishing.
+              This portfolio is prepared for AI Engineer opportunities, with direct links for email, work, LinkedIn and a future CV download.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
