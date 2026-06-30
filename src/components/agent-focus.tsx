@@ -12,23 +12,23 @@ const focusAreas = [
 export function AgentFocus() {
   return (
     <section id="focus" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-      <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
+      <div data-reveal className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.35em] text-white/40">Focus</p>
-          <h2 className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
+          <p className="text-sm font-medium uppercase tracking-[0.35em] text-[#2a1b14]/40">Focus</p>
+          <h2 className="mt-5 text-4xl font-semibold tracking-[-0.04em] text-[#2a1b14] sm:text-5xl">
             The harness matters as much as the model.
           </h2>
         </div>
-        <p className="max-w-2xl text-lg leading-8 text-white/55 lg:justify-self-end">
+        <p className="max-w-2xl text-lg leading-8 text-[#2a1b14]/55 lg:justify-self-end">
           I frame AI work as systems engineering: tools, state, context, evaluation and user control around the LLM.
         </p>
       </div>
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {focusAreas.map((area, index) => (
-          <Card key={area.title} className="group hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.045]">
-            <p className="font-mono text-sm text-white/35">0{index + 1}</p>
-            <h3 className="mt-8 text-xl font-medium text-white">{area.title}</h3>
-            <p className="mt-3 text-sm leading-6 text-white/50">{area.text}</p>
+          <Card data-reveal key={area.title} className="group hover:-translate-y-1 hover:border-[#2a1b14]/30 hover:bg-[#2a1b14]/[0.035]">
+            <p className="font-mono text-sm text-[#2a1b14]/35">0{index + 1}</p>
+            <h3 className="mt-8 text-xl font-medium text-[#2a1b14]">{area.title}</h3>
+            <p className="mt-3 text-sm leading-6 text-[#2a1b14]/50">{area.text}</p>
           </Card>
         ))}
       </div>
