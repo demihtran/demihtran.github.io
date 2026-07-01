@@ -35,14 +35,14 @@ export function PageAnimations() {
       });
 
       gsap.utils.toArray<HTMLElement>("[data-about-text]").forEach((element) => {
-        const characters = element.querySelectorAll("[data-about-char]");
+        const words = element.querySelectorAll("[data-about-word]");
 
-        gsap.set(characters, { autoAlpha: 0 });
-        gsap.to(characters, {
+        gsap.set(words, { autoAlpha: 0 });
+        gsap.to(words, {
           autoAlpha: 1,
           duration: 0.01,
           ease: "none",
-          stagger: 0.018,
+          stagger: 0.045,
           scrollTrigger: {
             trigger: element,
             start: "top 78%",

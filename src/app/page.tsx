@@ -6,7 +6,6 @@ import { Intro } from "@/components/intro";
 import { Navbar } from "@/components/navbar";
 import { PageAnimations } from "@/components/page-animations";
 import { Projects } from "@/components/projects";
-import { Skills } from "@/components/skills";
 
 export default function Home() {
   return (
@@ -16,7 +15,6 @@ export default function Home() {
       <Hero />
       <Intro />
       <Projects />
-      <Skills />
       <Experience />
       <Contact />
       <Footer />

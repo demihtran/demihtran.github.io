@@ -7,11 +7,12 @@ export function Intro() {
       <p
         data-about-text
         aria-label={aboutText}
-        className="max-w-5xl text-pretty text-2xl font-medium leading-snug tracking-[-0.035em] text-[#2a1b14] sm:text-3xl lg:text-4xl"
+        className="max-w-5xl text-justify text-2xl font-medium leading-snug tracking-[-0.035em] text-[#2a1b14] sm:text-3xl lg:text-4xl"
       >
-        {Array.from(aboutText).map((character, index) => (
-          <span key={`${character}-${index}`} data-about-char aria-hidden="true" className="inline-block will-change-opacity">
-            {character === " " ? " " : character}
+        {aboutText.split(" ").map((word, index) => (
+          <span key={`${word}-${index}`} data-about-word aria-hidden="true" className="inline-block will-change-opacity">
+            {word}
+            {index < aboutText.split(" ").length - 1 ? " " : ""}
           </span>
         ))}
       </p>
