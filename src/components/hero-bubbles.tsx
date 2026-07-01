@@ -31,7 +31,7 @@ type Bounds = {
   height: number;
 };
 
-const bubbleCount = 72;
+const bubbleCount = 46;
 const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
 const random = (() => {
@@ -65,7 +65,7 @@ const bubbles: BubbleConfig[] = Array.from({ length: bubbleCount }, (_, index) =
   };
 });
 
-const getSafeDistance = (bubble: BubbleState) => bubble.size * 0.72 + 70 + bubble.depth * 14;
+const getSafeDistance = (bubble: BubbleState) => bubble.size * 0.58 + 54 + bubble.depth * 10;
 
 function createStates(bounds: Bounds) {
   return bubbles.map<BubbleState>((bubble) => {
@@ -97,7 +97,7 @@ function updateHomes(states: BubbleState[], bounds: Bounds) {
 
 function clampVelocity(bubble: BubbleState) {
   const speed = Math.hypot(bubble.vx, bubble.vy);
-  const maxSpeed = 54;
+  const maxSpeed = 18;
 
   if (speed > maxSpeed) {
     const scale = maxSpeed / speed;
@@ -111,6 +111,7 @@ export function HeroBubbles() {
   const bubbleRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const statesRef = useRef<BubbleState[]>([]);
   const boundsRef = useRef<Bounds>({ width: 0, height: 0 });
+  const rootOffsetRef = useRef({ left: 0, top: 0 });
   const pointerRef = useRef({ x: 0, y: 0, active: false });
   const frameRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number | null>(null);
@@ -124,6 +125,7 @@ export function HeroBubbles() {
     const measure = () => {
       const bounds = root.getBoundingClientRect();
       boundsRef.current = { width: bounds.width, height: bounds.height };
+      rootOffsetRef.current = { left: bounds.left + window.scrollX, top: bounds.top + window.scrollY };
 
       if (!statesRef.current.length) {
         statesRef.current = createStates(boundsRef.current);
@@ -138,30 +140,15 @@ export function HeroBubbles() {
 
       const pointer = pointerRef.current;
       const bounds = boundsRef.current;
-      const pointerOffsetX = pointer.active ? (pointer.x / bounds.width - 0.5) * bubble.depth * -22 : 0;
-      const pointerOffsetY = pointer.active ? (pointer.y / bounds.height - 0.5) * bubble.depth * -16 : 0;
-      const driftX = Math.sin(time / 1300 + bubble.phase) * (1.5 + bubble.depth * 1.8);
-      const driftY = Math.cos(time / 1500 + bubble.phase) * (1.8 + bubble.depth * 1.6);
+      const pointerOffsetX = pointer.active ? (pointer.x / bounds.width - 0.5) * bubble.depth * -12 : 0;
+      const pointerOffsetY = pointer.active ? (pointer.y / bounds.height - 0.5) * bubble.depth * -8 : 0;
+      const driftX = Math.sin(time / 1700 + bubble.phase) * (0.9 + bubble.depth);
+      const driftY = Math.cos(time / 1900 + bubble.phase) * (1 + bubble.depth);
       const speed = Math.hypot(bubble.vx, bubble.vy);
-      const scale = 1 + bubble.depth * 0.18 + Math.sin(time / 1700 + bubble.phase) * 0.025 + Math.min(speed, 16) * 0.006;
-      const rotate = bubble.spin + bubble.vx * 0.8 - bubble.vy * 0.45;
-      const blur = Math.max(0, (0.8 - bubble.depth) * 0.55);
-      const saturation = 1 + bubble.depth * 0.08;
-      const opacity = Math.min(0.78, Math.max(0.18, bubble.opacity + bubble.depth * 0.08));
+      const scale = 1 + bubble.depth * 0.14 + Math.min(speed, 10) * 0.003;
+      const rotate = bubble.spin + bubble.vx * 0.32 - bubble.vy * 0.18;
 
-      element.style.opacity = String(opacity);
-      element.style.zIndex = String(Math.round(100 + bubble.depth * 80 + bubble.y * 0.02));
-      element.style.filter = `blur(${blur}px) saturate(${saturation})`;
       element.style.transform = `translate3d(${bubble.x + pointerOffsetX + driftX}px, ${bubble.y + pointerOffsetY + driftY}px, 0) translate(-50%, -50%) rotate(${rotate}deg) scale(${scale})`;
-      element.style.setProperty("--bubble-inner-opacity", String(0.42 + bubble.depth * 0.12));
-      const warp = Math.sin(time / 900 + bubble.phase);
-      element.style.setProperty("--bubble-warp", String(warp));
-      element.style.setProperty(
-        "--bubble-radius",
-        `${51 + warp * 2}% ${49 - warp}% ${54 + warp * 1.4}% ${46 - warp * 1.8}% / ${46 - warp * 1.5}% ${48 + warp * 1.2}% ${55 - warp}% ${52 + warp * 1.8}%`,
-      );
-      element.style.setProperty("--bubble-shine-x", `${warp * 2}px`);
-      element.style.setProperty("--bubble-shine-y", `${warp * -3}px`);
     };
 
     const applyStaticLayout = () => {
@@ -203,26 +190,25 @@ export function HeroBubbles() {
           const nx = dx / distance;
           const ny = dy / distance;
           const safeDistance = getSafeDistance(bubble);
-          const influenceRadius = bubble.size * 4.5 + 260 + bubble.depth * 36;
+          const influenceRadius = bubble.size * 2.6 + 150 + bubble.depth * 18;
 
           if (distance < influenceRadius) {
             const influence = 1 - distance / influenceRadius;
-            const urgency = distance < safeDistance * 1.35 ? 2.4 : 1;
-            const force = influence ** 1.45 * (18 + bubble.depth * 4) * urgency;
-            const swirl = influence ** 1.25 * (7 + bubble.depth * 2) * urgency * (bubble.id % 2 === 0 ? 1 : -1);
-            const mass = Math.max(0.7, bubble.size / 92);
+            const force = influence ** 1.7 * (5.8 + bubble.depth * 1.2);
+            const swirl = influence ** 1.5 * (1.8 + bubble.depth * 0.6) * (bubble.id % 2 === 0 ? 1 : -1);
+            const mass = Math.max(0.9, bubble.size / 82);
 
             bubble.vx += (nx * force + -ny * swirl) / mass;
             bubble.vy += (ny * force + nx * swirl) / mass;
-            bubble.vSpin += swirl * 2.4;
+            bubble.vSpin += swirl * 0.9;
           }
 
-          if (distance < safeDistance * 1.1) {
-            const push = (safeDistance * 1.1 - distance) * 0.72;
+          if (distance < safeDistance) {
+            const push = (safeDistance - distance) * 0.22;
             bubble.x += nx * push;
             bubble.y += ny * push;
-            bubble.vx += nx * 18;
-            bubble.vy += ny * 18;
+            bubble.vx += nx * 4.5;
+            bubble.vy += ny * 4.5;
           }
         }
       });
@@ -237,12 +223,12 @@ export function HeroBubbles() {
           const distance = Math.hypot(dx, dy) || 0.001;
           const nx = dx / distance;
           const ny = dy / distance;
-          const minDistance = (bubble.size + other.size) * 0.34;
-          const linkDistance = minDistance + 118;
+          const minDistance = (bubble.size + other.size) * 0.28;
+          const linkDistance = minDistance + 72;
 
           if (distance < minDistance) {
             const overlap = (minDistance - distance) / minDistance;
-            const force = overlap ** 1.35 * 6.5;
+            const force = overlap ** 1.4 * 2.4;
             const bubbleMass = Math.max(0.8, bubble.size / 72);
             const otherMass = Math.max(0.8, other.size / 72);
 
@@ -253,9 +239,9 @@ export function HeroBubbles() {
             bubble.vSpin -= force * 2;
             other.vSpin += force * 2;
           } else if (distance < linkDistance) {
-            const tension = (1 - distance / linkDistance) * 0.03;
+            const tension = (1 - distance / linkDistance) * 0.01;
             const relativeVelocity = (other.vx - bubble.vx) * nx + (other.vy - bubble.vy) * ny;
-            const transfer = relativeVelocity * 0.025;
+            const transfer = relativeVelocity * 0.008;
 
             bubble.vx += nx * tension + nx * transfer;
             bubble.vy += ny * tension + ny * transfer;
@@ -266,9 +252,9 @@ export function HeroBubbles() {
       }
 
       states.forEach((bubble, index) => {
-        bubble.vx *= 0.86;
-        bubble.vy *= 0.86;
-        bubble.vSpin *= 0.88;
+        bubble.vx *= 0.78;
+        bubble.vy *= 0.78;
+        bubble.vSpin *= 0.72;
         clampVelocity(bubble);
 
         bubble.x += bubble.vx * dt;
@@ -299,9 +285,10 @@ export function HeroBubbles() {
     };
 
     const onPointerMove = (event: PointerEvent) => {
-      const bounds = root.getBoundingClientRect();
-      const x = event.clientX - bounds.left;
-      const y = event.clientY - bounds.top;
+      const bounds = boundsRef.current;
+      const offset = rootOffsetRef.current;
+      const x = event.pageX - offset.left;
+      const y = event.pageY - offset.top;
 
       pointerRef.current = {
         x,
@@ -344,11 +331,14 @@ export function HeroBubbles() {
               top: 0,
               width: `${bubble.size}px`,
               height: `${bubble.size}px`,
-              opacity: bubble.opacity,
-              transform: `translate3d(-50%, -50%, 0) rotate(${bubble.rotate}deg) scale(${1 + bubble.depth * 0.16})`,
+              opacity: Math.min(0.82, Math.max(0.24, bubble.opacity + bubble.depth * 0.08)),
+              filter: `blur(${Math.max(0, (0.8 - bubble.depth) * 0.32)}px) saturate(${1.08 + bubble.depth * 0.06})`,
+              zIndex: Math.round(100 + bubble.depth * 80 + bubble.top * 0.2),
+              transform: `translate3d(-50%, -50%, 0) rotate(${bubble.rotate}deg) scale(${1 + bubble.depth * 0.14})`,
               "--bubble-hue": bubble.hue,
               "--bubble-depth": bubble.depth,
-              "--bubble-warp": 0,
+              "--bubble-inner-opacity": 0.42 + bubble.depth * 0.12,
+              "--bubble-radius": "51% 49% 54% 46% / 46% 48% 55% 52%",
             } as CSSProperties
           }
         >
