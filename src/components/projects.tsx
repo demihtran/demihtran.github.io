@@ -8,7 +8,7 @@ export function Projects() {
       <div data-reveal className="mb-10">
         <p className="text-sm font-medium uppercase tracking-[0.35em] text-[#2a1b14]/40">Project</p>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 md:grid-cols-2">
         {projects.map((project, index) => (
           <a key={project.title} href={project.githubUrl} target="_blank" rel="noreferrer" className="group block">
             <Card data-reveal className="h-full overflow-hidden p-3 hover:-translate-y-1 hover:border-[#2a1b14]/30 hover:bg-[#2a1b14]/[0.035]">
