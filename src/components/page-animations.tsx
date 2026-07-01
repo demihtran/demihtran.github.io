@@ -35,13 +35,13 @@ export function PageAnimations() {
       });
 
       gsap.utils.toArray<HTMLElement>("[data-about-text]").forEach((element) => {
-        gsap.from(element.querySelectorAll("[data-about-word]"), {
-          autoAlpha: 0,
-          yPercent: 80,
-          rotateX: -28,
-          filter: "blur(10px)",
-          duration: 0.85,
-          ease: "power3.out",
+        const characters = element.querySelectorAll("[data-about-char]");
+
+        gsap.set(characters, { autoAlpha: 0 });
+        gsap.to(characters, {
+          autoAlpha: 1,
+          duration: 0.01,
+          ease: "none",
           stagger: 0.018,
           scrollTrigger: {
             trigger: element,

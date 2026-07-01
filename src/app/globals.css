@@ -37,6 +37,23 @@ a {
   text-decoration: none;
 }
 
+[data-about-text]::after {
+  display: inline-block;
+  width: 0.08em;
+  height: 0.9em;
+  margin-left: 0.12em;
+  background: #2a1b14;
+  content: "";
+  transform: translateY(0.12em);
+  animation: about-caret 0.85s steps(1) infinite;
+}
+
+@keyframes about-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
 ::selection {
   background: #2a1b14;
   color: #f6f1ea;

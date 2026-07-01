@@ -4,16 +4,14 @@ const aboutText =
 export function Intro() {
   return (
     <section id="about" className="mx-auto max-w-6xl px-6 py-20 lg:px-8">
-      <p data-reveal className="text-sm font-medium uppercase tracking-[0.35em] text-[#2a1b14]/40">
-        About
-      </p>
       <p
         data-about-text
-        className="mt-8 max-w-5xl text-balance text-3xl font-medium leading-tight tracking-[-0.04em] text-[#2a1b14] sm:text-5xl sm:leading-tight lg:text-6xl"
+        aria-label={aboutText}
+        className="max-w-5xl text-pretty text-2xl font-medium leading-snug tracking-[-0.035em] text-[#2a1b14] sm:text-3xl lg:text-4xl"
       >
-        {aboutText.split(" ").map((word, index) => (
-          <span key={`${word}-${index}`} data-about-word className="inline-block will-change-transform">
-            {word}&nbsp;
+        {Array.from(aboutText).map((character, index) => (
+          <span key={`${character}-${index}`} data-about-char aria-hidden="true" className="inline-block will-change-opacity">
+            {character === " " ? " " : character}
           </span>
         ))}
       </p>
