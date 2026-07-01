@@ -31,7 +31,7 @@ type Bounds = {
   height: number;
 };
 
-const bubbleCount = 46;
+const bubbleCount = 56;
 const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
 const random = (() => {
@@ -49,7 +49,8 @@ const bubbles: BubbleConfig[] = Array.from({ length: bubbleCount }, (_, index) =
   const clusterRadiusX = 22;
   const clusterRadiusY = 17;
   const depth = random() * 2 - 1;
-  const size = 32 + random() * 58 + (1 - ring) * 34 + depth * 10;
+  const largeBubbleBoost = index < 7 ? 20 - index * 1.8 : 0;
+  const size = 34 + random() * 58 + (1 - ring) * 34 + depth * 10 + largeBubbleBoost;
 
   return {
     id: index,
