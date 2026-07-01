@@ -2,7 +2,7 @@ import { HeroBubbles } from "@/components/hero-bubbles";
 
 export function Hero() {
   return (
-    <section id="top" className="relative isolate overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
+    <section id="top" className="relative isolate overflow-hidden px-6 pb-20 pt-0 sm:pb-24 lg:px-8">
       <HeroBubbles />
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl items-center justify-center">
         <div className="relative z-10 mx-auto max-w-5xl text-center">
