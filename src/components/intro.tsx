@@ -9,7 +9,7 @@ export function Intro() {
       <p
         data-about-text
         aria-label={aboutText}
-        className="max-w-5xl text-justify text-2xl font-medium leading-snug tracking-[-0.035em] text-[#2a1b14] sm:text-3xl lg:text-4xl"
+        className="w-full text-justify text-2xl font-medium leading-snug tracking-[-0.035em] text-[#2a1b14] sm:text-3xl lg:text-4xl"
       >
         {aboutWords.map((word, wordIndex) => (
           <span key={`${word}-${wordIndex}`} aria-hidden="true" className="inline-block whitespace-nowrap">
