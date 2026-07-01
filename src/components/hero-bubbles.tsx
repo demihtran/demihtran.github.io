@@ -149,7 +149,10 @@ export function HeroBubbles() {
       const scale = 1 + bubble.depth * 0.14 + Math.min(speed, 10) * 0.003;
       const rotate = bubble.spin + bubble.vx * 0.32 - bubble.vy * 0.18;
 
-      element.style.transform = `translate3d(${bubble.x + pointerOffsetX + driftX}px, ${bubble.y + pointerOffsetY + driftY}px, 0) translate(-50%, -50%) rotate(${rotate}deg) scale(${scale})`;
+      const deltaX = bubble.x - bubble.homeX + pointerOffsetX + driftX;
+      const deltaY = bubble.y - bubble.homeY + pointerOffsetY + driftY;
+
+      element.style.transform = `translate3d(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px), 0) rotate(${rotate}deg) scale(${scale})`;
     };
 
     const applyStaticLayout = () => {
@@ -328,8 +331,8 @@ export function HeroBubbles() {
           data-mobile-extra={bubble.mobileExtra ? "true" : undefined}
           style={
             {
-              left: 0,
-              top: 0,
+              left: `${bubble.left}%`,
+              top: `${bubble.top}%`,
               width: `${bubble.size}px`,
               height: `${bubble.size}px`,
               opacity: Math.min(0.82, Math.max(0.24, bubble.opacity + bubble.depth * 0.08)),
