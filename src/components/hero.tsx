@@ -7,7 +7,7 @@ export function Hero() {
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl items-center justify-center">
         <div className="relative z-10 mx-auto max-w-5xl text-center">
           <p data-intro className="text-sm font-medium uppercase tracking-[0.35em] text-[#2a1b14]/45">
-            AI Engineer / Agent Systems
+            AI Engineer / DEMI&apos;s Portfolio
           </p>
           <h1 data-intro className="mt-8 text-balance text-6xl font-semibold tracking-[-0.06em] text-[#2a1b14] sm:text-7xl lg:text-8xl">
             AI that works.
