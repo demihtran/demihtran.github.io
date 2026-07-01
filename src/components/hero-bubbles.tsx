@@ -58,14 +58,14 @@ const bubbles: BubbleConfig[] = Array.from({ length: bubbleCount }, (_, index) =
     size: Math.max(24, size),
     depth,
     phase: random() * Math.PI * 2,
-    hue: 20 + random() * 18,
-    opacity: 0.22 + (depth + 1) * 0.17 + random() * 0.14,
+    hue: 10 + random() * 24,
+    opacity: 0.38 + (depth + 1) * 0.2 + random() * 0.16,
     rotate: -30 + random() * 60,
     mobileExtra: index > 43,
   };
 });
 
-const getSafeDistance = (bubble: BubbleState) => bubble.size * 0.54 + 42 + bubble.depth * 10;
+const getSafeDistance = (bubble: BubbleState) => bubble.size * 0.72 + 70 + bubble.depth * 14;
 
 function createStates(bounds: Bounds) {
   return bubbles.map<BubbleState>((bubble) => {
@@ -97,7 +97,7 @@ function updateHomes(states: BubbleState[], bounds: Bounds) {
 
 function clampVelocity(bubble: BubbleState) {
   const speed = Math.hypot(bubble.vx, bubble.vy);
-  const maxSpeed = 30;
+  const maxSpeed = 54;
 
   if (speed > maxSpeed) {
     const scale = maxSpeed / speed;
@@ -203,25 +203,26 @@ export function HeroBubbles() {
           const nx = dx / distance;
           const ny = dy / distance;
           const safeDistance = getSafeDistance(bubble);
-          const influenceRadius = bubble.size * 2.75 + 130 + bubble.depth * 28;
+          const influenceRadius = bubble.size * 4.5 + 260 + bubble.depth * 36;
 
           if (distance < influenceRadius) {
             const influence = 1 - distance / influenceRadius;
-            const force = influence ** 2.35 * (8.5 + bubble.depth * 2.5);
-            const swirl = influence ** 1.8 * (4.5 + bubble.depth * 1.5) * (bubble.id % 2 === 0 ? 1 : -1);
-            const mass = Math.max(0.8, bubble.size / 78);
+            const urgency = distance < safeDistance * 1.35 ? 2.4 : 1;
+            const force = influence ** 1.45 * (18 + bubble.depth * 4) * urgency;
+            const swirl = influence ** 1.25 * (7 + bubble.depth * 2) * urgency * (bubble.id % 2 === 0 ? 1 : -1);
+            const mass = Math.max(0.7, bubble.size / 92);
 
             bubble.vx += (nx * force + -ny * swirl) / mass;
             bubble.vy += (ny * force + nx * swirl) / mass;
-            bubble.vSpin += swirl * 1.8;
+            bubble.vSpin += swirl * 2.4;
           }
 
-          if (distance < safeDistance) {
-            const push = safeDistance - distance;
+          if (distance < safeDistance * 1.1) {
+            const push = (safeDistance * 1.1 - distance) * 0.72;
             bubble.x += nx * push;
             bubble.y += ny * push;
-            bubble.vx += nx * 9;
-            bubble.vy += ny * 9;
+            bubble.vx += nx * 18;
+            bubble.vy += ny * 18;
           }
         }
       });
@@ -237,11 +238,11 @@ export function HeroBubbles() {
           const nx = dx / distance;
           const ny = dy / distance;
           const minDistance = (bubble.size + other.size) * 0.34;
-          const linkDistance = minDistance + 78;
+          const linkDistance = minDistance + 118;
 
           if (distance < minDistance) {
             const overlap = (minDistance - distance) / minDistance;
-            const force = overlap * overlap * 3.2;
+            const force = overlap ** 1.35 * 6.5;
             const bubbleMass = Math.max(0.8, bubble.size / 72);
             const otherMass = Math.max(0.8, other.size / 72);
 
@@ -252,20 +253,21 @@ export function HeroBubbles() {
             bubble.vSpin -= force * 2;
             other.vSpin += force * 2;
           } else if (distance < linkDistance) {
-            const tension = (1 - distance / linkDistance) * 0.015;
+            const tension = (1 - distance / linkDistance) * 0.03;
             const relativeVelocity = (other.vx - bubble.vx) * nx + (other.vy - bubble.vy) * ny;
+            const transfer = relativeVelocity * 0.025;
 
-            bubble.vx += nx * tension + nx * relativeVelocity * 0.012;
-            bubble.vy += ny * tension + ny * relativeVelocity * 0.012;
-            other.vx -= nx * tension + nx * relativeVelocity * 0.012;
-            other.vy -= ny * tension + ny * relativeVelocity * 0.012;
+            bubble.vx += nx * tension + nx * transfer;
+            bubble.vy += ny * tension + ny * transfer;
+            other.vx -= nx * tension + nx * transfer;
+            other.vy -= ny * tension + ny * transfer;
           }
         }
       }
 
       states.forEach((bubble, index) => {
-        bubble.vx *= 0.9;
-        bubble.vy *= 0.9;
+        bubble.vx *= 0.86;
+        bubble.vy *= 0.86;
         bubble.vSpin *= 0.88;
         clampVelocity(bubble);
 

@@ -10,10 +10,10 @@ export function Hero() {
             AI Engineer / Agent Systems
           </p>
           <h1 data-intro className="mt-8 text-balance text-6xl font-semibold tracking-[-0.06em] text-[#2a1b14] sm:text-7xl lg:text-8xl">
-            Building AI systems that feel simple, useful, and reliable.
+            AI that works.
           </h1>
-          <p data-intro className="mx-auto mt-8 max-w-2xl text-pretty text-lg leading-8 text-[#2a1b14]/58 sm:text-xl">
-            I turn LLMs, tools, context, and evaluation into practical products people can trust.
+          <p data-intro className="mx-auto mt-8 max-w-xl text-pretty text-lg leading-8 text-[#2a1b14]/58 sm:text-xl">
+            Practical agents, reliable systems.
           </p>
         </div>
       </div>
