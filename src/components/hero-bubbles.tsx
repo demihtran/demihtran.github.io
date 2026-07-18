@@ -37,6 +37,10 @@ const spinDamping = 0.7;
 const wallBounce = 0.32;
 const verticalPlayfieldInset = 0.16;
 const pointerBaseRadius = 108;
+const sameDepthCollisionThreshold = 0.18;
+const collisionIterations = 2;
+const collisionSlop = 0.25;
+const collisionRestitution = 0.12;
 const palette = [0x2a1b14, 0x5d3c2a, 0x7a583e, 0xb98562, 0xe2b992, 0xf6f1ea];
 
 type BubbleConfig = {
@@ -160,6 +164,96 @@ function clampVelocity(bubble: BubbleState) {
   }
 }
 
+function getVisualGeometry(bubble: BubbleState, pointer: PointerState, bounds: Bounds, time: number) {
+  const pointerOffsetX = pointer.active ? (pointer.x / bounds.width - 0.5) * bubble.depth * -12 : 0;
+  const pointerOffsetY = pointer.active ? (pointer.y / bounds.height - 0.5) * bubble.depth * -8 : 0;
+  const driftX = Math.sin(time / 1700 + bubble.phase) * (0.9 + bubble.depth);
+  const driftY = Math.cos(time / 1900 + bubble.phase) * (1 + bubble.depth);
+  const speed = Math.hypot(bubble.vx, bubble.vy);
+  const visualScale = 1 + bubble.depth * 0.14 + Math.min(speed, 10) * 0.003;
+
+  return {
+    centerX: bubble.x + pointerOffsetX + driftX,
+    centerY: bubble.y + pointerOffsetY + driftY,
+    radius: bubble.size * 0.5 * visualScale,
+  };
+}
+
+function constrainBubbleToBounds(bubble: BubbleState, bounds: Bounds) {
+  const radius = bubble.size * 0.5 * (1 + bubble.depth * 0.14);
+  const minX = radius;
+  const maxX = Math.max(minX, bounds.width - radius);
+  const minY = Math.max(radius, bounds.height * verticalPlayfieldInset);
+  const maxY = Math.max(minY, Math.min(bounds.height - radius, bounds.height * (1 - verticalPlayfieldInset)));
+
+  if (bubble.x < minX) {
+    bubble.x = minX;
+    bubble.vx = Math.abs(bubble.vx) * wallBounce;
+  } else if (bubble.x > maxX) {
+    bubble.x = maxX;
+    bubble.vx = -Math.abs(bubble.vx) * wallBounce;
+  }
+
+  if (bubble.y < minY) {
+    bubble.y = minY;
+    bubble.vy = Math.abs(bubble.vy) * wallBounce;
+  } else if (bubble.y > maxY) {
+    bubble.y = maxY;
+    bubble.vy = -Math.abs(bubble.vy) * wallBounce;
+  }
+}
+
+function resolveBubbleCollisions(simulation: Simulation, pointer: PointerState, time: number) {
+  const { states, bounds, activeCount } = simulation;
+
+  for (let iteration = 0; iteration < collisionIterations; iteration += 1) {
+    for (let index = 0; index < activeCount; index += 1) {
+      const bubble = states[index];
+
+      for (let nextIndex = index + 1; nextIndex < activeCount; nextIndex += 1) {
+        const other = states[nextIndex];
+        if (Math.abs(bubble.depth - other.depth) > sameDepthCollisionThreshold) continue;
+
+        const bubbleVisual = getVisualGeometry(bubble, pointer, bounds, time);
+        const otherVisual = getVisualGeometry(other, pointer, bounds, time);
+        const dx = otherVisual.centerX - bubbleVisual.centerX;
+        const dy = otherVisual.centerY - bubbleVisual.centerY;
+        const distance = Math.hypot(dx, dy);
+        const minDistance = bubbleVisual.radius + otherVisual.radius;
+        const penetration = minDistance - distance;
+
+        if (penetration <= collisionSlop) continue;
+
+        const fallbackAngle = (bubble.id * 17 + other.id * 31) * goldenAngle;
+        const nx = distance > 0.001 ? dx / distance : Math.cos(fallbackAngle);
+        const ny = distance > 0.001 ? dy / distance : Math.sin(fallbackAngle);
+        const bubbleInverseMass = 1 / getMass(bubble);
+        const otherInverseMass = 1 / getMass(other);
+        const inverseMassTotal = bubbleInverseMass + otherInverseMass;
+        const correction = (penetration - collisionSlop) / inverseMassTotal;
+
+        bubble.x -= nx * correction * bubbleInverseMass;
+        bubble.y -= ny * correction * bubbleInverseMass;
+        other.x += nx * correction * otherInverseMass;
+        other.y += ny * correction * otherInverseMass;
+
+        const relativeVelocity = (other.vx - bubble.vx) * nx + (other.vy - bubble.vy) * ny;
+        if (relativeVelocity < 0) {
+          const impulse = (-(1 + collisionRestitution) * relativeVelocity) / inverseMassTotal;
+          bubble.vx -= nx * impulse * bubbleInverseMass;
+          bubble.vy -= ny * impulse * bubbleInverseMass;
+          other.vx += nx * impulse * otherInverseMass;
+          other.vy += ny * impulse * otherInverseMass;
+        }
+      }
+    }
+
+    for (let index = 0; index < activeCount; index += 1) {
+      constrainBubbleToBounds(states[index], bounds);
+    }
+  }
+}
+
 function updateSimulation(simulation: Simulation, pointer: PointerState, time: number, delta: number) {
   const { states, bounds, activeCount } = simulation;
   const step = Math.min(maxStep, Math.max(0, delta / frameDuration));
@@ -201,34 +295,6 @@ function updateSimulation(simulation: Simulation, pointer: PointerState, time: n
     }
   }
 
-  for (let index = 0; index < activeCount; index += 1) {
-    const bubble = states[index];
-
-    for (let nextIndex = index + 1; nextIndex < activeCount; nextIndex += 1) {
-      const other = states[nextIndex];
-      const dx = other.x - bubble.x;
-      const dy = other.y - bubble.y;
-      const distance = Math.hypot(dx, dy) || 0.001;
-      const nx = dx / distance;
-      const ny = dy / distance;
-      const minDistance = (bubble.size + other.size) * 0.26;
-
-      if (distance >= minDistance) continue;
-
-      const overlap = 1 - distance / minDistance;
-      const force = overlap ** 1.5 * 0.75 * step;
-      const bubbleMass = getMass(bubble);
-      const otherMass = getMass(other);
-
-      bubble.vx -= (nx * force) / bubbleMass;
-      bubble.vy -= (ny * force) / bubbleMass;
-      other.vx += (nx * force) / otherMass;
-      other.vy += (ny * force) / otherMass;
-      bubble.vSpin -= force * 0.18;
-      other.vSpin += force * 0.18;
-    }
-  }
-
   const velocityDecay = Math.pow(velocityDamping, step);
   const spinDecay = Math.pow(spinDamping, step);
 
@@ -242,29 +308,10 @@ function updateSimulation(simulation: Simulation, pointer: PointerState, time: n
     bubble.x += bubble.vx * step;
     bubble.y += bubble.vy * step;
     bubble.spin += bubble.vSpin * step;
-
-    const radius = bubble.size * 0.5;
-    const minX = radius;
-    const maxX = Math.max(minX, bounds.width - radius);
-    const minY = Math.max(radius, bounds.height * verticalPlayfieldInset);
-    const maxY = Math.max(minY, Math.min(bounds.height - radius, bounds.height * (1 - verticalPlayfieldInset)));
-
-    if (bubble.x < minX) {
-      bubble.x = minX;
-      bubble.vx = Math.abs(bubble.vx) * wallBounce;
-    } else if (bubble.x > maxX) {
-      bubble.x = maxX;
-      bubble.vx = -Math.abs(bubble.vx) * wallBounce;
-    }
-
-    if (bubble.y < minY) {
-      bubble.y = minY;
-      bubble.vy = Math.abs(bubble.vy) * wallBounce;
-    } else if (bubble.y > maxY) {
-      bubble.y = maxY;
-      bubble.vy = -Math.abs(bubble.vy) * wallBounce;
-    }
+    constrainBubbleToBounds(bubble, bounds);
   }
+
+  resolveBubbleCollisions(simulation, pointer, time);
 }
 
 function updateInstances(simulation: Simulation, matrix: Matrix4, position: Vector3, scale: Vector3, pointer: PointerState, time: number) {
@@ -277,17 +324,10 @@ function updateInstances(simulation: Simulation, matrix: Matrix4, position: Vect
     const worldHeight = 2 * Math.tan(MathUtils.degToRad(camera.fov / 2)) * (camera.position.z - z);
     const worldWidth = worldHeight * camera.aspect;
     const worldPerPixel = worldHeight / bounds.height;
-    const pointerOffsetX = pointer.active ? (pointer.x / bounds.width - 0.5) * bubble.depth * -12 : 0;
-    const pointerOffsetY = pointer.active ? (pointer.y / bounds.height - 0.5) * bubble.depth * -8 : 0;
-    const driftX = Math.sin(time / 1700 + bubble.phase) * (0.9 + bubble.depth);
-    const driftY = Math.cos(time / 1900 + bubble.phase) * (1 + bubble.depth);
-    const speed = Math.hypot(bubble.vx, bubble.vy);
-    const visualScale = 1 + bubble.depth * 0.14 + Math.min(speed, 10) * 0.003;
-    const centerX = bubble.x + pointerOffsetX + driftX;
-    const centerY = bubble.y + pointerOffsetY + driftY;
-    const radius = bubble.size * 0.5 * visualScale * worldPerPixel;
+    const visual = getVisualGeometry(bubble, pointer, bounds, time);
+    const radius = visual.radius * worldPerPixel;
 
-    position.set((centerX / bounds.width - 0.5) * worldWidth, (0.5 - centerY / bounds.height) * worldHeight, z);
+    position.set((visual.centerX / bounds.width - 0.5) * worldWidth, (0.5 - visual.centerY / bounds.height) * worldHeight, z);
     scale.set(radius, radius, radius);
     matrix.makeRotationZ(MathUtils.degToRad(bubble.spin));
     matrix.scale(scale);
@@ -346,6 +386,10 @@ function createSimulation(canvas: HTMLCanvasElement): Simulation | null {
     clearcoat: 1,
     clearcoatRoughness: 0.12,
     envMapIntensity: 1.15,
+    transparent: false,
+    opacity: 1,
+    depthTest: true,
+    depthWrite: true,
   });
   const mesh = new InstancedMesh(geometry, material, maxCount);
   mesh.instanceMatrix.setUsage(DynamicDrawUsage);
@@ -594,7 +638,6 @@ export function HeroBubbles() {
                 top: `${formatValue(bubble.top)}%`,
                 width: `${formatValue(bubble.size)}px`,
                 height: `${formatValue(bubble.size)}px`,
-                opacity: formatValue(Math.min(0.82, Math.max(0.24, bubble.opacity + bubble.depth * 0.08)), 6),
                 filter: `blur(${formatValue(Math.max(0, (0.8 - bubble.depth) * 0.32), 6)}px) saturate(${formatValue(1.08 + bubble.depth * 0.06, 6)})`,
                 zIndex: String(Math.round(100 + bubble.depth * 80 + bubble.top * 0.2)),
                 transform: `translate3d(-50%, -50%, 0px) rotate(${formatValue(bubble.rotate)}deg) scale(${formatValue(1 + bubble.depth * 0.14, 6)})`,
