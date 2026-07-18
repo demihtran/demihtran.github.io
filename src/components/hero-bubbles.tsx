@@ -29,6 +29,14 @@ const mobileBreakpoint = 640;
 const cameraZ = 15;
 const cameraFov = 45;
 const depthRange = 0.8;
+const frameDuration = 1000 / 60;
+const maxStep = 1.5;
+const maxSpeed = 9;
+const velocityDamping = 0.84;
+const spinDamping = 0.7;
+const wallBounce = 0.32;
+const verticalPlayfieldInset = 0.16;
+const pointerBaseRadius = 108;
 const palette = [0x2a1b14, 0x5d3c2a, 0x7a583e, 0xb98562, 0xe2b992, 0xf6f1ea];
 
 type BubbleConfig = {
@@ -101,7 +109,7 @@ const bubbles: BubbleConfig[] = Array.from({ length: desktopCount }, (_, index) 
   return {
     id: index,
     left: 50 + Math.cos(angle) * ring * 22 + (random() - 0.5) * 4,
-    top: 55 + Math.sin(angle) * ring * 17 + (random() - 0.5) * 4,
+    top: 50 + Math.sin(angle) * ring * 13 + (random() - 0.5) * 3,
     size: Math.max(24, size),
     depth,
     phase: random() * Math.PI * 2,
@@ -112,8 +120,9 @@ const bubbles: BubbleConfig[] = Array.from({ length: desktopCount }, (_, index) 
   };
 });
 
-const getSafeDistance = (bubble: BubbleState) => bubble.size * 0.58 + 54 + bubble.depth * 10;
+const getSafeDistance = (bubble: BubbleState) => bubble.size * 0.58 + 36 + bubble.depth * 8;
 const formatValue = (value: number, precision = 4) => value.toFixed(precision);
+const getMass = (bubble: BubbleState) => Math.max(0.9, bubble.size / 82);
 
 function createStates(bounds: Bounds) {
   return bubbles.map<BubbleState>((bubble) => {
@@ -138,14 +147,11 @@ function updateHomes(states: BubbleState[], bounds: Bounds) {
   states.forEach((bubble) => {
     bubble.homeX = (bubble.left / 100) * bounds.width;
     bubble.homeY = (bubble.top / 100) * bounds.height;
-    bubble.x += (bubble.homeX - bubble.x) * 0.18;
-    bubble.y += (bubble.homeY - bubble.y) * 0.18;
   });
 }
 
 function clampVelocity(bubble: BubbleState) {
   const speed = Math.hypot(bubble.vx, bubble.vy);
-  const maxSpeed = 18;
 
   if (speed > maxSpeed) {
     const scale = maxSpeed / speed;
@@ -156,16 +162,16 @@ function clampVelocity(bubble: BubbleState) {
 
 function updateSimulation(simulation: Simulation, pointer: PointerState, time: number, delta: number) {
   const { states, bounds, activeCount } = simulation;
-  const step = Math.min(2, Math.max(0.5, delta / 16.67));
+  const step = Math.min(maxStep, Math.max(0, delta / frameDuration));
 
   for (let index = 0; index < activeCount; index += 1) {
     const bubble = states[index];
-    const homeStrength = 0.006 + (1 - bubble.depth) * 0.001;
-    const floatForceX = Math.sin(time / 1900 + bubble.phase) * 0.012;
-    const floatForceY = Math.cos(time / 2100 + bubble.phase) * 0.012;
+    const homeStrength = 0.004 + (1 - bubble.depth) * 0.0006;
+    const floatForceX = Math.sin(time / 2100 + bubble.phase) * 0.008;
+    const floatForceY = Math.cos(time / 2300 + bubble.phase) * 0.008;
 
-    bubble.vx += (bubble.homeX - bubble.x) * homeStrength + floatForceX;
-    bubble.vy += (bubble.homeY - bubble.y) * homeStrength + floatForceY;
+    bubble.vx += ((bubble.homeX - bubble.x) * homeStrength + floatForceX) * step;
+    bubble.vy += ((bubble.homeY - bubble.y) * homeStrength + floatForceY) * step;
 
     if (pointer.active) {
       const dx = bubble.x - pointer.x;
@@ -174,25 +180,23 @@ function updateSimulation(simulation: Simulation, pointer: PointerState, time: n
       const nx = dx / distance;
       const ny = dy / distance;
       const safeDistance = getSafeDistance(bubble);
-      const influenceRadius = bubble.size * 2.6 + 150 + bubble.depth * 18;
+      const influenceRadius = bubble.size * 1.6 + pointerBaseRadius + bubble.depth * 12;
+      const mass = getMass(bubble);
 
       if (distance < influenceRadius) {
         const influence = 1 - distance / influenceRadius;
-        const force = influence ** 1.7 * (5.8 + bubble.depth * 1.2);
-        const swirl = influence ** 1.5 * (1.8 + bubble.depth * 0.6) * (bubble.id % 2 === 0 ? 1 : -1);
-        const mass = Math.max(0.9, bubble.size / 82);
+        const force = influence ** 1.8 * (1.25 + bubble.depth * 0.2);
+        const swirl = influence ** 1.6 * 0.28 * (bubble.id % 2 === 0 ? 1 : -1);
 
-        bubble.vx += (nx * force + -ny * swirl) / mass;
-        bubble.vy += (ny * force + nx * swirl) / mass;
-        bubble.vSpin += swirl * 0.9;
+        bubble.vx += ((nx * force - ny * swirl) / mass) * step;
+        bubble.vy += ((ny * force + nx * swirl) / mass) * step;
+        bubble.vSpin += (swirl * 0.16 * step) / mass;
       }
 
       if (distance < safeDistance) {
-        const push = (safeDistance - distance) * 0.22;
-        bubble.x += nx * push;
-        bubble.y += ny * push;
-        bubble.vx += nx * 4.5;
-        bubble.vy += ny * 4.5;
+        const correction = Math.min((safeDistance - distance) * 0.04, 1.4) * step;
+        bubble.x += nx * correction;
+        bubble.y += ny * correction;
       }
     }
   }
@@ -207,60 +211,58 @@ function updateSimulation(simulation: Simulation, pointer: PointerState, time: n
       const distance = Math.hypot(dx, dy) || 0.001;
       const nx = dx / distance;
       const ny = dy / distance;
-      const minDistance = (bubble.size + other.size) * 0.28;
-      const linkDistance = minDistance + 72;
+      const minDistance = (bubble.size + other.size) * 0.26;
 
-      if (distance < minDistance) {
-        const overlap = (minDistance - distance) / minDistance;
-        const force = overlap ** 1.4 * 2.4;
-        const bubbleMass = Math.max(0.8, bubble.size / 72);
-        const otherMass = Math.max(0.8, other.size / 72);
+      if (distance >= minDistance) continue;
 
-        bubble.vx -= (nx * force) / bubbleMass;
-        bubble.vy -= (ny * force) / bubbleMass;
-        other.vx += (nx * force) / otherMass;
-        other.vy += (ny * force) / otherMass;
-        bubble.vSpin -= force * 2;
-        other.vSpin += force * 2;
-      } else if (distance < linkDistance) {
-        const tension = (1 - distance / linkDistance) * 0.01;
-        const relativeVelocity = (other.vx - bubble.vx) * nx + (other.vy - bubble.vy) * ny;
-        const transfer = relativeVelocity * 0.008;
+      const overlap = 1 - distance / minDistance;
+      const force = overlap ** 1.5 * 0.75 * step;
+      const bubbleMass = getMass(bubble);
+      const otherMass = getMass(other);
 
-        bubble.vx += nx * tension + nx * transfer;
-        bubble.vy += ny * tension + ny * transfer;
-        other.vx -= nx * tension + nx * transfer;
-        other.vy -= ny * tension + ny * transfer;
-      }
+      bubble.vx -= (nx * force) / bubbleMass;
+      bubble.vy -= (ny * force) / bubbleMass;
+      other.vx += (nx * force) / otherMass;
+      other.vy += (ny * force) / otherMass;
+      bubble.vSpin -= force * 0.18;
+      other.vSpin += force * 0.18;
     }
   }
 
+  const velocityDecay = Math.pow(velocityDamping, step);
+  const spinDecay = Math.pow(spinDamping, step);
+
   for (let index = 0; index < activeCount; index += 1) {
     const bubble = states[index];
-    bubble.vx *= 0.78;
-    bubble.vy *= 0.78;
-    bubble.vSpin *= 0.72;
+    bubble.vx *= velocityDecay;
+    bubble.vy *= velocityDecay;
+    bubble.vSpin *= spinDecay;
     clampVelocity(bubble);
 
     bubble.x += bubble.vx * step;
     bubble.y += bubble.vy * step;
     bubble.spin += bubble.vSpin * step;
 
-    const padding = bubble.size * 0.45;
-    if (bubble.x < -padding) {
-      bubble.x = -padding;
-      bubble.vx *= -0.35;
-    } else if (bubble.x > bounds.width + padding) {
-      bubble.x = bounds.width + padding;
-      bubble.vx *= -0.35;
+    const radius = bubble.size * 0.5;
+    const minX = radius;
+    const maxX = Math.max(minX, bounds.width - radius);
+    const minY = Math.max(radius, bounds.height * verticalPlayfieldInset);
+    const maxY = Math.max(minY, Math.min(bounds.height - radius, bounds.height * (1 - verticalPlayfieldInset)));
+
+    if (bubble.x < minX) {
+      bubble.x = minX;
+      bubble.vx = Math.abs(bubble.vx) * wallBounce;
+    } else if (bubble.x > maxX) {
+      bubble.x = maxX;
+      bubble.vx = -Math.abs(bubble.vx) * wallBounce;
     }
 
-    if (bubble.y < -padding) {
-      bubble.y = -padding;
-      bubble.vy *= -0.35;
-    } else if (bubble.y > bounds.height + padding) {
-      bubble.y = bounds.height + padding;
-      bubble.vy *= -0.35;
+    if (bubble.y < minY) {
+      bubble.y = minY;
+      bubble.vy = Math.abs(bubble.vy) * wallBounce;
+    } else if (bubble.y > maxY) {
+      bubble.y = maxY;
+      bubble.vy = -Math.abs(bubble.vy) * wallBounce;
     }
   }
 }
@@ -578,7 +580,7 @@ export function HeroBubbles() {
   }, []);
 
   return (
-    <div ref={rootRef} aria-hidden="true" className="hero-ballpit pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+    <div ref={rootRef} aria-hidden="true" className="hero-ballpit pointer-events-none absolute inset-x-0 top-0 bottom-20 z-0 overflow-hidden sm:bottom-24">
       <div className="hero-ballpit__fallback absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,250,243,0.42),transparent_58%)]" />
         {bubbles.map((bubble) => (
