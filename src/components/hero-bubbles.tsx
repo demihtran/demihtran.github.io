@@ -36,7 +36,7 @@ const velocityDamping = 0.84;
 const spinDamping = 0.7;
 const wallBounce = 0.32;
 const verticalPlayfieldInset = 0.16;
-const pointerBaseRadius = 108;
+const pointerBaseRadius = 124;
 const sameDepthCollisionThreshold = 0.18;
 const collisionIterations = 2;
 const collisionSlop = 0.25;
@@ -112,8 +112,8 @@ const bubbles: BubbleConfig[] = Array.from({ length: desktopCount }, (_, index) 
 
   return {
     id: index,
-    left: 50 + Math.cos(angle) * ring * 22 + (random() - 0.5) * 4,
-    top: 50 + Math.sin(angle) * ring * 13 + (random() - 0.5) * 3,
+    left: 50 + Math.cos(angle) * ring * 24 + (random() - 0.5) * 4,
+    top: 50 + Math.sin(angle) * ring * 14 + (random() - 0.5) * 3,
     size: Math.max(24, size),
     depth,
     phase: random() * Math.PI * 2,
@@ -279,8 +279,8 @@ function updateSimulation(simulation: Simulation, pointer: PointerState, time: n
 
       if (distance < influenceRadius) {
         const influence = 1 - distance / influenceRadius;
-        const force = influence ** 1.8 * (1.25 + bubble.depth * 0.2);
-        const swirl = influence ** 1.6 * 0.28 * (bubble.id % 2 === 0 ? 1 : -1);
+        const force = influence ** 1.7 * (1.5 + bubble.depth * 0.2);
+        const swirl = influence ** 1.6 * 0.34 * (bubble.id % 2 === 0 ? 1 : -1);
 
         bubble.vx += ((nx * force - ny * swirl) / mass) * step;
         bubble.vy += ((ny * force + nx * swirl) / mass) * step;
@@ -288,7 +288,7 @@ function updateSimulation(simulation: Simulation, pointer: PointerState, time: n
       }
 
       if (distance < safeDistance) {
-        const correction = Math.min((safeDistance - distance) * 0.04, 1.4) * step;
+        const correction = Math.min((safeDistance - distance) * 0.055, 1.25) * step;
         bubble.x += nx * correction;
         bubble.y += ny * correction;
       }
